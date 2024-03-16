@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class EnemyNPCAI : MonoBehaviour
 {
-   
+
     public NavMeshAgent agent;
     public Transform _player;
     public LayerMask ground, player;
@@ -29,18 +29,18 @@ public class EnemyNPCAI : MonoBehaviour
     private void Update()
     {
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, player);
-        playerInAttackRange= Physics.CheckSphere(transform.position, attackRange, player);
+        playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, player);
 
-        if(!playerInSightRange && !playerInAttackRange)
+        if (!playerInSightRange && !playerInAttackRange)
         {
             Patrolling();
         }
-        if(playerInSightRange && !playerInAttackRange)
+        if (playerInSightRange && !playerInAttackRange)
         {
-            
+
             ChasePlayer();
         }
-        if(playerInSightRange && playerInAttackRange)
+        if (playerInSightRange && playerInAttackRange)
         {
             AttackPlayer();
         }
@@ -48,7 +48,7 @@ public class EnemyNPCAI : MonoBehaviour
 
     public void Patrolling()
     {
-        if(!destinationPointSet)
+        if (!destinationPointSet)
         {
             SearchWalkPoint();
 
@@ -60,11 +60,11 @@ public class EnemyNPCAI : MonoBehaviour
         }
 
         Vector3 distanceToDestinationPoint = transform.position - destinationPoint;
-        if(distanceToDestinationPoint.magnitude < 1.0f)
+        if (distanceToDestinationPoint.magnitude < 1.0f)
         {
-            destinationPointSet = false;    
+            destinationPointSet = false;
         }
-        
+
     }
 
     public void SearchWalkPoint()
@@ -73,7 +73,7 @@ public class EnemyNPCAI : MonoBehaviour
         float randomZ = Random.Range(-walkPointRange, walkPointRange);
 
         destinationPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
-        if(Physics.Raycast(destinationPoint, -transform.up, 2.0f, ground))
+        if (Physics.Raycast(destinationPoint, -transform.up, 2.0f, ground))
         {
             destinationPointSet = true;
         }
@@ -91,21 +91,21 @@ public class EnemyNPCAI : MonoBehaviour
 
         transform.LookAt(_player);
 
-        if(!alreadyAttacked)
+        if (!alreadyAttacked)
         {
             Rigidbody rb = Instantiate(sphere, transform.position, Quaternion.identity).GetComponent<Rigidbody>();
-            rb.AddForce(transform.forward* 25f, ForceMode.Impulse);
+            rb.AddForce(transform.forward * 25f, ForceMode.Impulse);
             rb.AddForce(transform.up * 7f, ForceMode.Impulse);
             alreadyAttacked = true;
 
+            //StartCoroutine(Bullet());
             Invoke(nameof(resetAttack), timeBetweenAttacks);
         }
     }
 
     void resetAttack()
-    {
-        alreadyAttacked=false;
-    }
-
+        {
+            alreadyAttacked = false;
+        }
 
 }
